@@ -23,6 +23,7 @@ namespace infini
         // free b, then allocate d
         allocator.free(offsetB, b->getBytes());
         size_t offsetD = allocator.alloc(d->getBytes());
+        std::cout <<  offsetA <<"+"<< offsetB  <<"+" <<offsetC <<"+"<<offsetD <<std::endl;
         // expected to be a->d->c
         EXPECT_EQ(offsetB, offsetD);
         ASSERT_FALSE(offsetA == 0 && offsetB == 0 && offsetC == 0 && offsetD == 0);
