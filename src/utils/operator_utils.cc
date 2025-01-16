@@ -9,8 +9,29 @@ Shape infer_broadcast(const Shape &A, const Shape &B) {
     // TODO：对 A 和 B 进行双向广播，返回广播后的形状。
     // REF: https://github.com/onnx/onnx/blob/main/docs/Broadcasting.md
     // =================================== 作业 ===================================
+    int rankA = A.size();
+    int rankB = B.size();
+    int maxrank = std::max(rankA,rankB);
+
+    Shape result(maxrank);
     
-    return {};
+    // 从后向前遍历每个维度
+    for (int i = 0; i < maxrank; ++i) {
+        int dimA = (i < rankA) ? A[rankA - 1 - i] : 1;
+        int dimB = (i < rankB) ? B[rankB - 1 - i] : 1;
+        
+        if (dimA == dimB) {
+            result[maxrank - 1 - i] = dimA;
+        } else if (dimA == 1) {
+            result[maxrank - 1 - i] = dimB;
+        } else if (dimB == 1) {
+            result[maxrank - 1 - i] = dimA;
+        } else {
+            throw std::invalid_argument("Shapes are not broadcast-compatible");
+        }
+    }
+    
+    return result;
 }
 
 int get_real_axis(const int &axis, const int &rank) {
